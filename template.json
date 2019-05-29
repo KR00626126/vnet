@@ -1,0 +1,67 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworks_npe_cbu_caest_vnet01_name": {
+            "defaultValue": "npe-cbu-caest-vnet01",
+            "type": "String"
+        },
+        "networkSecurityGroups_Spare_tier_npe_nsg_externalid": {
+            "defaultValue": "/subscriptions/7a075cd1-d89f-4f8c-a43f-5643f6f10fea/resourceGroups/web-tier-npe/providers/Microsoft.Network/networkSecurityGroups/Spare-tier-npe-nsg",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2019-02-01",
+            "name": "[parameters('virtualNetworks_npe_cbu_caest_vnet01_name')]",
+            "location": "canadaeast",
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "213db135-9231-4829-af8d-b723a2cd9060",
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.73.24.0/21"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "Spare_Subnet_Demo",
+                        "etag": "W/\"2b525b10-df98-4dd0-a31e-652568c62dbc\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "addressPrefix": "10.73.24.0/28",
+                            "networkSecurityGroup": {
+                                "id": "[parameters('networkSecurityGroups_Spare_tier_npe_nsg_externalid')]"
+                            },
+                            "serviceEndpoints": [],
+                            "delegations": []
+                        }
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false,
+                "enableVmProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2019-02-01",
+            "name": "[concat(parameters('virtualNetworks_npe_cbu_caest_vnet01_name'), '/Spare_Subnet_Demo')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_npe_cbu_caest_vnet01_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.73.24.0/28",
+                "networkSecurityGroup": {
+                    "id": "[parameters('networkSecurityGroups_Spare_tier_npe_nsg_externalid')]"
+                },
+                "serviceEndpoints": [],
+                "delegations": []
+            }
+        }
+    ]
+}
